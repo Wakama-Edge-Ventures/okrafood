@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(///wsl.localhost/UbuntuWakama/home/wakama/projects/okrafood/**)",
+      "Read(//home/wakama/projects/okrafood/**)"
+    ],
+    "additionalDirectories": [
+      "\\home\\wakama\\projects\\okrafood",
+      "\\\\wsl.localhost\\UbuntuWakama\\home\\wakama\\projects\\okrafood"
+    ]
+  }
+}

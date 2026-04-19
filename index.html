@@ -1,0 +1,1030 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- SEO -->
+  <title>okrafood — L'escargot premium, livré à Abidjan</title>
+  <meta name="description" content="Escargots vivants et préparés. Livraison Yango 24h à Abidjan. Paiement à la commande. Fraîcheur garantie.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://okrafood.com">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://okrafood.com">
+  <meta property="og:title" content="okrafood — L'escargot premium, livré à Abidjan">
+  <meta property="og:description" content="Escargots vivants et préparés. Livraison Yango 24h à Abidjan.">
+  <meta property="og:image" content="assets/images/okrafood_profile_HD_2000px_dark.png">
+  <meta property="og:locale" content="fr_CI">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="okrafood — L'escargot premium, livré à Abidjan">
+  <meta name="twitter:description" content="Escargots vivants et préparés. Livraison Yango 24h à Abidjan.">
+  <meta name="twitter:image" content="assets/images/okrafood_profile_HD_2000px_dark.png">
+
+  <!-- Favicons -->
+  <link rel="icon" type="image/png" href="assets/images/okrafood_profile_512px_dark.png">
+  <link rel="apple-touch-icon" href="assets/images/okrafood_profile_512px_dark.png">
+
+  <!-- Google Fonts : Inter (body) + Fraunces (titres) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500;1,9..144,600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Alpine.js -->
+  <script defer src="https://unpkg.com/alpinejs@3.13.3/dist/cdn.min.js"></script>
+
+  <!-- GSAP + ScrollTrigger -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+  <!-- Tailwind config : extension palette brand -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'bg-dark':    '#0A0F0D',
+            'green-sig':  '#4ADE80',
+            'yellow-acc': '#FCD34D',
+            'blue-deep':  '#1E3A5F',
+            'white-warm': '#F5F1E8',
+            'gray-muted': '#8B9188',
+          },
+          fontFamily: {
+            fraunces: ['Fraunces', 'serif'],
+            inter:    ['Inter', 'sans-serif'],
+          },
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* ── CSS Custom Properties (palette brand) ── */
+    :root {
+      --bg-dark:         #0A0F0D;
+      --green-signature: #4ADE80;
+      --yellow-accent:   #FCD34D;
+      --blue-deep:       #1E3A5F;
+      --white-warm:      #F5F1E8;
+      --gray-muted:      #8B9188;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      background-color: var(--bg-dark);
+      color: var(--white-warm);
+      font-family: 'Inter', sans-serif;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Accessibilité : focus ring vert */
+    :focus-visible {
+      outline: 2px solid var(--green-signature);
+      outline-offset: 3px;
+      border-radius: 4px;
+    }
+
+    /* Glassmorphism */
+    .glass {
+      background: rgba(255,255,255,0.04);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    /* Product card hover : élévation + glow vert */
+    .product-card {
+      transition: transform 0.35s cubic-bezier(.22,1,.36,1),
+                  box-shadow  0.35s ease;
+    }
+    .product-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 0 40px rgba(74,222,128,0.18), 0 20px 50px rgba(0,0,0,0.45);
+    }
+
+    /* Product image wrapper : aspect 4/3, coins arrondis haut */
+    .product-image-wrapper {
+      position: relative;
+      aspect-ratio: 4 / 3;
+      overflow: hidden;
+      border-radius: 1rem 1rem 0 0;
+      background: linear-gradient(135deg, var(--bg-dark), #0d1f10);
+    }
+    /* Product image : cover + zoom subtil au hover */
+    .product-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      transition: transform 0.5s ease;
+      opacity: 0; /* révélé individuellement par GSAP */
+    }
+    .product-card:hover .product-image {
+      transform: scale(1.08);
+    }
+
+    /* Nav : transition opacité au scroll (géré par Alpine) */
+    #main-nav { transition: background 0.4s ease, backdrop-filter 0.4s ease, box-shadow 0.4s ease; }
+
+    /* Underline accent jaune sous les titres de section */
+    .title-accent { position: relative; display: inline-block; }
+    .title-accent::after {
+      content: '';
+      position: absolute;
+      bottom: -8px; left: 0;
+      width: 100%; height: 3px;
+      background: var(--yellow-accent);
+      border-radius: 2px;
+    }
+
+    /* Ligne timeline : animée par GSAP depuis scaleX(0) */
+    #timeline-progress { transform-origin: left center; transform: scaleX(0); }
+
+    /* Flèches timeline pulsées */
+    .arrow-pulse       { animation: arrowMove 1.6s ease-in-out infinite; }
+    .arrow-pulse-delay { animation: arrowMove 1.6s ease-in-out 0.4s infinite; }
+    @keyframes arrowMove {
+      0%,100% { transform: translateX(0);  opacity: 1;   }
+      50%      { transform: translateX(7px); opacity: 0.5; }
+    }
+
+    /* Gradient text pour le H1 */
+    .gradient-text {
+      background: linear-gradient(135deg, var(--green-signature) 0%, #86efac 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* Scrollbar discrète */
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: var(--bg-dark); }
+    ::-webkit-scrollbar-thumb { background: var(--green-signature); border-radius: 3px; }
+
+    /* Éléments GSAP : masqués initialement, révélés par JS */
+    .gsap-fade, .gsap-stagger { opacity: 0; }
+
+    /* ── CSS wordmark okrafood ── */
+    .okrafood-wordmark {
+      display: inline-flex;
+      align-items: baseline;
+      position: relative;
+      font-family: 'Fraunces', serif;
+      font-weight: 900;
+      letter-spacing: -0.02em;
+      text-decoration: none;
+      line-height: 1;
+    }
+    .wm-okra { color: var(--green-signature); font-style: italic; }
+    .wm-food { color: var(--white-warm); font-style: normal; }
+    .wm-dot {
+      position: absolute;
+      bottom: -0.35em;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0.12em;
+      height: 0.12em;
+      border-radius: 50%;
+      background: var(--yellow-accent);
+    }
+    .nav-wordmark { font-size: 1.75rem; }
+    @media (min-width: 768px) { .nav-wordmark { font-size: 2.25rem; } }
+    .footer-wordmark { font-size: 2.5rem; }
+    @media (min-width: 768px) { .footer-wordmark { font-size: 3.5rem; } }
+  </style>
+</head>
+
+<body class="bg-bg-dark text-white-warm font-inter">
+
+  <!-- ── Snail background layer ── -->
+  <div id="snail-layer" aria-hidden="true"
+       style="position:fixed;inset:0;pointer-events:none;z-index:1;overflow:hidden;"></div>
+
+  <!-- ── Snail SVG template (cloned by JS) ── -->
+  <template id="snail-tpl">
+    <svg viewBox="0 0 100 60" xmlns="http://www.w3.org/2000/svg"
+         style="position:absolute;will-change:transform;">
+      <path d="M10,50 Q10,35 25,35 L65,35 Q75,35 75,45 L75,50 Z"
+            fill="currentColor" opacity="0.6"/>
+      <circle cx="45" cy="30" r="18" fill="currentColor" opacity="0.7"/>
+      <circle cx="45" cy="30" r="12" fill="none"
+              stroke="var(--bg-dark)" stroke-width="1.5" opacity="0.4"/>
+      <circle cx="45" cy="30" r="7" fill="none"
+              stroke="var(--bg-dark)" stroke-width="1.5" opacity="0.4"/>
+      <line x1="15" y1="35" x2="10" y2="25"
+            stroke="currentColor" stroke-width="1.5" opacity="0.6"/>
+      <line x1="18" y1="35" x2="16" y2="22"
+            stroke="currentColor" stroke-width="1.5" opacity="0.6"/>
+      <circle cx="10" cy="24" r="1.5" fill="currentColor" opacity="0.6"/>
+      <circle cx="16" cy="21" r="1.5" fill="currentColor" opacity="0.6"/>
+    </svg>
+  </template>
+
+  <!-- ════════════════════════════════════════
+       SVG SPRITE — icônes réutilisées via <use>
+  ═══════════════════════════════════════════ -->
+  <svg style="display:none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+    <!-- WhatsApp -->
+    <symbol id="ico-whatsapp" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+    </symbol>
+    <!-- TikTok -->
+    <symbol id="ico-tiktok" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.69a8.17 8.17 0 004.81 1.55V6.79a4.85 4.85 0 01-1.04-.1z"/>
+    </symbol>
+    <!-- Check -->
+    <symbol id="ico-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="20 6 9 17 4 12"/>
+    </symbol>
+    <!-- Arrow right -->
+    <symbol id="ico-arrow-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+    </symbol>
+    <!-- Arrow down -->
+    <symbol id="ico-arrow-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="6 9 12 15 18 9"/>
+    </symbol>
+    <!-- Leaf -->
+    <symbol id="ico-leaf" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/>
+      <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/>
+    </symbol>
+    <!-- Moon bio -->
+    <symbol id="ico-bio" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>
+    </symbol>
+    <!-- Truck -->
+    <symbol id="ico-truck" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M5 17H3a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11a2 2 0 0 1 2 2v3"/>
+      <rect width="7" height="7" x="14" y="10" rx="1"/>
+      <circle cx="7.5" cy="17.5" r="2.5"/>
+      <circle cx="17.5" cy="17.5" r="2.5"/>
+    </symbol>
+    <!-- Chat bubble -->
+    <symbol id="ico-chat" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/>
+    </symbol>
+    <!-- Building pro -->
+    <symbol id="ico-building" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <rect width="16" height="20" x="4" y="2" rx="2" ry="2"/>
+      <path d="M9 22v-4h6v4M8 6h.01M16 6h.01M12 6h.01M12 10h.01M8 10h.01M16 10h.01M12 14h.01M8 14h.01M16 14h.01"/>
+    </symbol>
+    <!-- Snail stylisé (coquille spirale + corps + antennes) -->
+    <symbol id="ico-snail" viewBox="0 0 130 90">
+      <circle cx="78" cy="44" r="30" fill="none" stroke="currentColor" stroke-width="2.5" opacity="0.72"/>
+      <circle cx="78" cy="44" r="21" fill="none" stroke="currentColor" stroke-width="2"   opacity="0.55"/>
+      <circle cx="78" cy="44" r="13" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.40"/>
+      <circle cx="78" cy="44" r="5.5" fill="currentColor" opacity="0.35"/>
+      <path d="M48 58 Q34 62 20 58 Q12 55 13 49 Q15 43 22 43 Q36 43 48 58Z" fill="currentColor" opacity="0.55"/>
+      <path d="M13 50 Q5 54 3 61" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" opacity="0.6"/>
+      <path d="M35 42 Q28 29 31 18" stroke="currentColor" stroke-width="2"   fill="none" stroke-linecap="round" opacity="0.72"/>
+      <path d="M44 40 Q40 27 43 16" stroke="currentColor" stroke-width="2"   fill="none" stroke-linecap="round" opacity="0.72"/>
+      <circle cx="31" cy="17" r="3.5" fill="currentColor" opacity="0.85"/>
+      <circle cx="43" cy="15" r="3.5" fill="currentColor" opacity="0.85"/>
+    </symbol>
+  </svg>
+
+
+  <!-- ════════════════════════════════════════
+       1. NAVIGATION sticky
+  ═══════════════════════════════════════════ -->
+  <nav
+    id="main-nav"
+    x-data="{ scrolled: false, open: false }"
+    x-init="window.addEventListener('scroll', () => scrolled = window.scrollY > 60)"
+    :class="scrolled ? 'bg-bg-dark/95 backdrop-blur-md shadow-2xl shadow-black/30' : 'bg-transparent'"
+    class="fixed inset-x-0 top-0 z-50 px-6 py-4"
+    role="navigation"
+    aria-label="Navigation principale"
+  >
+    <div class="max-w-6xl mx-auto flex items-center justify-between">
+
+      <!-- Wordmark CSS -->
+      <a href="#" class="okrafood-wordmark nav-wordmark" aria-label="okrafood">
+        <span class="wm-okra">okra</span><span class="wm-food">food</span>
+        <span class="wm-dot" aria-hidden="true"></span>
+      </a>
+
+      <!-- Liens desktop -->
+      <div class="hidden md:flex items-center gap-8">
+        <a href="#produits"  class="text-sm font-medium text-gray-muted hover:text-white-warm transition-colors">Produits</a>
+        <a href="#commander" class="text-sm font-medium text-gray-muted hover:text-white-warm transition-colors">Comment commander</a>
+        <a href="#contact"   class="text-sm font-medium text-gray-muted hover:text-white-warm transition-colors">Contact</a>
+        <a href="https://wa.me/2250788952878?text=Bonjour%2C%20je%20visite%20votre%20site%20okrafood"
+           target="_blank" rel="noopener noreferrer"
+           class="bg-green-sig text-bg-dark px-5 py-2.5 rounded-full text-sm font-semibold hover:bg-green-400 transition-all hover:shadow-lg hover:shadow-green-sig/30"
+           aria-label="Commander sur WhatsApp">
+          Commander
+        </a>
+      </div>
+
+      <!-- Burger mobile -->
+      <button
+        @click="open = !open"
+        class="md:hidden p-2 -mr-2 rounded-lg text-white-warm"
+        :aria-expanded="open.toString()"
+        aria-label="Ouvrir ou fermer le menu de navigation"
+      >
+        <svg x-show="!open" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
+        <svg x-show="open" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Menu mobile déroulant -->
+    <div
+      x-show="open"
+      x-transition:enter="transition ease-out duration-200"
+      x-transition:enter-start="opacity-0 -translate-y-3"
+      x-transition:enter-end="opacity-100 translate-y-0"
+      x-transition:leave="transition ease-in duration-150"
+      x-transition:leave-start="opacity-100 translate-y-0"
+      x-transition:leave-end="opacity-0 -translate-y-3"
+      class="md:hidden mt-4 pt-4 border-t border-white/10"
+    >
+      <nav class="flex flex-col gap-5 pb-2" aria-label="Menu mobile">
+        <a href="#produits"  @click="open=false" class="text-base font-medium text-gray-muted hover:text-white-warm transition-colors">Produits</a>
+        <a href="#commander" @click="open=false" class="text-base font-medium text-gray-muted hover:text-white-warm transition-colors">Comment commander</a>
+        <a href="#contact"   @click="open=false" class="text-base font-medium text-gray-muted hover:text-white-warm transition-colors">Contact</a>
+        <a href="https://wa.me/2250788952878?text=Bonjour%2C%20je%20visite%20votre%20site%20okrafood"
+           target="_blank" rel="noopener noreferrer"
+           @click="open=false"
+           class="bg-green-sig text-bg-dark px-6 py-3 rounded-full text-base font-semibold text-center hover:bg-green-400 transition-all"
+           aria-label="Commander sur WhatsApp">
+          Commander
+        </a>
+      </nav>
+    </div>
+  </nav>
+
+
+  <!-- ════════════════════════════════════════
+       2. HERO pleine hauteur viewport
+  ═══════════════════════════════════════════ -->
+  <section id="hero" class="relative min-h-screen flex flex-col justify-center overflow-hidden" aria-label="Bannière principale okrafood">
+
+    <!-- Fond gradient sombre vert → noir -->
+    <div class="absolute inset-0 bg-gradient-to-br from-[#061a0c] via-bg-dark to-bg-dark pointer-events-none" aria-hidden="true"></div>
+
+    <!-- Blobs SVG organiques animés en continu par GSAP -->
+    <svg class="absolute inset-0 w-full h-full pointer-events-none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <radialGradient id="rg1" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#4ADE80" stop-opacity="0.22"/><stop offset="100%" stop-color="#4ADE80" stop-opacity="0"/>
+        </radialGradient>
+        <radialGradient id="rg2" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#4ADE80" stop-opacity="0.13"/><stop offset="100%" stop-color="#4ADE80" stop-opacity="0"/>
+        </radialGradient>
+        <radialGradient id="rg3" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#1E3A5F" stop-opacity="0.38"/><stop offset="100%" stop-color="#1E3A5F" stop-opacity="0"/>
+        </radialGradient>
+      </defs>
+      <ellipse id="blob1" cx="18%"  cy="28%"  rx="380" ry="320" fill="url(#rg1)"/>
+      <ellipse id="blob2" cx="78%"  cy="65%"  rx="420" ry="360" fill="url(#rg2)"/>
+      <ellipse id="blob3" cx="50%"  cy="88%"  rx="340" ry="280" fill="url(#rg3)"/>
+    </svg>
+
+    <!-- Contenu principal hero -->
+    <div class="relative z-10 max-w-4xl mx-auto px-6 pt-28 pb-20 text-center">
+
+      <!-- Badge disponibilité -->
+      <div id="h-badge" class="inline-flex items-center gap-2 bg-green-sig/10 border border-green-sig/20 text-green-sig text-xs font-medium px-4 py-2 rounded-full mb-8">
+        <span class="w-2 h-2 rounded-full bg-green-sig animate-pulse" aria-hidden="true"></span>
+        Livraison disponible à Abidjan
+      </div>
+
+      <!-- H1 principal -->
+      <h1 id="h-title" class="font-fraunces text-[2.6rem] sm:text-5xl md:text-6xl lg:text-7xl font-semibold text-white-warm leading-[1.12] tracking-tight mb-6">
+        L'escargot premium,<br>
+        <em class="not-italic gradient-text">livré chez vous.</em>
+      </h1>
+
+      <!-- Sous-titre -->
+      <p id="h-sub" class="text-gray-muted text-lg md:text-xl max-w-lg mx-auto mb-10 leading-relaxed">
+        Vivants ou préparés. Frais du jour.<br>
+        Livraison Yango à Abidjan en 24h.
+      </p>
+
+      <!-- CTAs -->
+      <div id="h-cta" class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
+        <a href="https://wa.me/2250788952878?text=Bonjour%2C%20je%20souhaite%20passer%20commande"
+           target="_blank" rel="noopener noreferrer"
+           class="flex items-center gap-3 bg-green-sig text-bg-dark px-8 py-4 rounded-full text-base font-semibold hover:bg-green-400 transition-all hover:shadow-xl hover:shadow-green-sig/30 w-full sm:w-auto justify-center"
+           aria-label="Commander sur WhatsApp">
+          <svg class="w-5 h-5 shrink-0" aria-hidden="true"><use href="#ico-whatsapp"/></svg>
+          Commander sur WhatsApp
+        </a>
+        <a href="#produits"
+           class="flex items-center gap-2 border border-white-warm/20 text-white-warm px-8 py-4 rounded-full text-base font-medium hover:border-green-sig/40 hover:text-green-sig transition-all w-full sm:w-auto justify-center"
+           aria-label="Défiler vers nos produits">
+          Découvrir nos produits
+          <svg class="w-4 h-4" aria-hidden="true"><use href="#ico-arrow-down"/></svg>
+        </a>
+      </div>
+
+      <!-- Trust badges -->
+      <div id="h-trust" class="flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-sm text-gray-muted">
+        <span class="flex items-center gap-2">
+          <svg class="w-4 h-4 text-green-sig shrink-0" aria-hidden="true"><use href="#ico-check"/></svg>
+          Paiement à la commande
+        </span>
+        <span class="flex items-center gap-2">
+          <svg class="w-4 h-4 text-green-sig shrink-0" aria-hidden="true"><use href="#ico-check"/></svg>
+          Fraîcheur garantie
+        </span>
+        <span class="flex items-center gap-2">
+          <svg class="w-4 h-4 text-green-sig shrink-0" aria-hidden="true"><use href="#ico-check"/></svg>
+          Livraison 24h
+        </span>
+      </div>
+    </div>
+
+    <!-- Indicateur scroll -->
+    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-gray-muted text-xs" aria-hidden="true">
+      <span class="tracking-widest uppercase text-[10px]">Défiler</span>
+      <div class="w-px h-8 bg-gradient-to-b from-gray-muted/60 to-transparent animate-pulse"></div>
+    </div>
+  </section>
+
+
+  <!-- ════════════════════════════════════════
+       3. POURQUOI NOUS (3 cards glassmorphism)
+  ═══════════════════════════════════════════ -->
+  <section id="pourquoi" class="py-24 px-6">
+    <div class="max-w-6xl mx-auto">
+
+      <div class="gsap-fade text-center mb-14">
+        <h2 class="font-fraunces text-3xl md:text-4xl font-semibold text-white-warm">
+          Pourquoi choisir <em class="not-italic text-green-sig italic">okrafood</em>&nbsp;?
+        </h2>
+      </div>
+
+      <!-- Grille : 3 colonnes desktop, stack vertical mobile -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+        <!-- Fraîcheur garantie -->
+        <article class="gsap-stagger glass rounded-2xl p-8 group hover:border-green-sig/25 transition-colors">
+          <div class="w-12 h-12 rounded-xl bg-green-sig/10 flex items-center justify-center mb-6 group-hover:bg-green-sig/20 transition-colors">
+            <svg class="w-6 h-6 text-green-sig" aria-hidden="true"><use href="#ico-leaf"/></svg>
+          </div>
+          <h3 class="font-fraunces text-xl font-semibold text-white-warm mb-3">Fraîcheur garantie</h3>
+          <p class="text-gray-muted text-sm leading-relaxed">Escargots sélectionnés et préparés le jour de la livraison. Aucun intermédiaire, de l'élevage à votre table.</p>
+        </article>
+
+        <!-- Élevage responsable -->
+        <article class="gsap-stagger glass rounded-2xl p-8 group hover:border-green-sig/25 transition-colors">
+          <div class="w-12 h-12 rounded-xl bg-green-sig/10 flex items-center justify-center mb-6 group-hover:bg-green-sig/20 transition-colors">
+            <svg class="w-6 h-6 text-green-sig" aria-hidden="true"><use href="#ico-bio"/></svg>
+          </div>
+          <h3 class="font-fraunces text-xl font-semibold text-white-warm mb-3">Élevage responsable</h3>
+          <p class="text-gray-muted text-sm leading-relaxed">Issus d'élevages locaux respectueux, sans additifs ni conservateurs. Naturel, comme ça devrait toujours être.</p>
+        </article>
+
+        <!-- Livraison 24h -->
+        <article class="gsap-stagger glass rounded-2xl p-8 group hover:border-green-sig/25 transition-colors">
+          <div class="w-12 h-12 rounded-xl bg-green-sig/10 flex items-center justify-center mb-6 group-hover:bg-green-sig/20 transition-colors">
+            <svg class="w-6 h-6 text-green-sig" aria-hidden="true"><use href="#ico-truck"/></svg>
+          </div>
+          <h3 class="font-fraunces text-xl font-semibold text-white-warm mb-3">Livraison 24h</h3>
+          <p class="text-gray-muted text-sm leading-relaxed">Partout à Abidjan via Yango, suivi temps réel. Commandez le soir, recevez le lendemain matin.</p>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ════════════════════════════════════════
+       4. NOS PRODUITS (grille 6 items)
+  ═══════════════════════════════════════════ -->
+  <section id="produits" class="py-24 px-6">
+    <div class="max-w-6xl mx-auto">
+
+      <div class="gsap-fade text-center mb-16">
+        <h2 class="font-fraunces text-3xl md:text-4xl font-semibold text-white-warm inline-block">
+          <span class="title-accent">Nos produits</span>
+        </h2>
+        <p class="text-gray-muted mt-10 max-w-lg mx-auto">Sélectionnés avec soin, préparés avec rigueur. Chaque produit est une promesse de qualité.</p>
+      </div>
+
+      <!-- Grille : 3 colonnes desktop, 2 tablet, 1 mobile -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+
+        <!-- ── Produit 1 : Escargots vivants 1kg ── -->
+        <article class="product-card gsap-stagger glass rounded-2xl overflow-hidden">
+          <div class="product-image-wrapper">
+            <img src="assets/images/escargot.png"
+                 alt="Escargots vivants 1kg"
+                 loading="lazy"
+                 class="product-image">
+            <div class="absolute inset-0 pointer-events-none"
+                 style="background:linear-gradient(to bottom,transparent 0%,rgba(10,15,13,0.4) 100%);"></div>
+            <span class="absolute top-4 left-4 bg-green-sig text-bg-dark text-[10px] font-bold tracking-wide uppercase px-2 py-1 rounded-full shadow-md">FRAIS DU JOUR</span>
+            <span class="absolute top-4 right-4 bg-green-sig/20 border border-green-sig/30 text-green-sig text-xs font-medium px-3 py-1 rounded-full">Vivants</span>
+          </div>
+          <div class="p-6">
+            <h3 class="font-fraunces text-lg font-semibold text-white-warm mb-1">Escargots vivants</h3>
+            <p class="text-gray-muted text-xs mb-4">Format 1 kilogramme</p>
+            <div class="flex items-end justify-between mb-5">
+              <span class="font-fraunces text-2xl font-semibold text-white-warm">XX&nbsp;XXX <span class="text-sm font-inter font-normal text-gray-muted">FCFA</span></span>
+              <span class="text-xs text-gray-muted bg-white/5 border border-white/8 px-2 py-1 rounded-lg">1 kg</span>
+            </div>
+            <a href="https://wa.me/2250788952878?text=Bonjour%2C%20je%20souhaite%20commander%20%3A%20Escargots%20vivants%201kg"
+               target="_blank" rel="noopener noreferrer"
+               class="flex items-center justify-center gap-2 w-full bg-green-sig/10 border border-green-sig/20 text-green-sig py-3 rounded-xl text-sm font-medium hover:bg-green-sig hover:text-bg-dark transition-all"
+               aria-label="Commander Escargots vivants 1kg sur WhatsApp">
+              <svg class="w-4 h-4 shrink-0" aria-hidden="true"><use href="#ico-whatsapp"/></svg>
+              Commander sur WhatsApp
+            </a>
+          </div>
+        </article>
+
+        <!-- ── Produit 2 : Escargots vivants 500g ── -->
+        <article class="product-card gsap-stagger glass rounded-2xl overflow-hidden">
+          <div class="product-image-wrapper">
+            <img src="assets/images/escargot.png"
+                 alt="Escargots vivants 500g"
+                 loading="lazy"
+                 class="product-image">
+            <div class="absolute inset-0 pointer-events-none"
+                 style="background:linear-gradient(to bottom,transparent 0%,rgba(10,15,13,0.4) 100%);"></div>
+            <span class="absolute top-4 left-4 bg-green-sig text-bg-dark text-[10px] font-bold tracking-wide uppercase px-2 py-1 rounded-full shadow-md">FRAIS DU JOUR</span>
+            <span class="absolute top-4 right-4 bg-green-sig/20 border border-green-sig/30 text-green-sig text-xs font-medium px-3 py-1 rounded-full">Vivants</span>
+          </div>
+          <div class="p-6">
+            <h3 class="font-fraunces text-lg font-semibold text-white-warm mb-1">Escargots vivants</h3>
+            <p class="text-gray-muted text-xs mb-4">Format 500 grammes</p>
+            <div class="flex items-end justify-between mb-5">
+              <span class="font-fraunces text-2xl font-semibold text-white-warm">XX&nbsp;XXX <span class="text-sm font-inter font-normal text-gray-muted">FCFA</span></span>
+              <span class="text-xs text-gray-muted bg-white/5 border border-white/8 px-2 py-1 rounded-lg">500 g</span>
+            </div>
+            <a href="https://wa.me/2250788952878?text=Bonjour%2C%20je%20souhaite%20commander%20%3A%20Escargots%20vivants%20500g"
+               target="_blank" rel="noopener noreferrer"
+               class="flex items-center justify-center gap-2 w-full bg-green-sig/10 border border-green-sig/20 text-green-sig py-3 rounded-xl text-sm font-medium hover:bg-green-sig hover:text-bg-dark transition-all"
+               aria-label="Commander Escargots vivants 500g sur WhatsApp">
+              <svg class="w-4 h-4 shrink-0" aria-hidden="true"><use href="#ico-whatsapp"/></svg>
+              Commander sur WhatsApp
+            </a>
+          </div>
+        </article>
+
+        <!-- ── Produit 3 : Escargots nettoyés barquette 500g ── -->
+        <article class="product-card gsap-stagger glass rounded-2xl overflow-hidden">
+          <div class="product-image-wrapper">
+            <img src="assets/images/escargot.png"
+                 alt="Escargots nettoyés barquette 500g"
+                 loading="lazy"
+                 class="product-image">
+            <div class="absolute inset-0 pointer-events-none"
+                 style="background:linear-gradient(to bottom,transparent 0%,rgba(10,15,13,0.4) 100%);"></div>
+            <span class="absolute top-4 left-4 bg-green-sig text-bg-dark text-[10px] font-bold tracking-wide uppercase px-2 py-1 rounded-full shadow-md">FRAIS DU JOUR</span>
+            <span class="absolute top-4 right-4 bg-yellow-acc/20 border border-yellow-acc/30 text-yellow-acc text-xs font-medium px-3 py-1 rounded-full">Nettoyés</span>
+          </div>
+          <div class="p-6">
+            <h3 class="font-fraunces text-lg font-semibold text-white-warm mb-1">Escargots nettoyés</h3>
+            <p class="text-gray-muted text-xs mb-4">Barquette 500 grammes</p>
+            <div class="flex items-end justify-between mb-5">
+              <span class="font-fraunces text-2xl font-semibold text-white-warm">XX&nbsp;XXX <span class="text-sm font-inter font-normal text-gray-muted">FCFA</span></span>
+              <span class="text-xs text-gray-muted bg-white/5 border border-white/8 px-2 py-1 rounded-lg">500 g</span>
+            </div>
+            <a href="https://wa.me/2250788952878?text=Bonjour%2C%20je%20souhaite%20commander%20%3A%20Escargots%20nettoy%C3%A9s%20barquette%20500g"
+               target="_blank" rel="noopener noreferrer"
+               class="flex items-center justify-center gap-2 w-full bg-green-sig/10 border border-green-sig/20 text-green-sig py-3 rounded-xl text-sm font-medium hover:bg-green-sig hover:text-bg-dark transition-all"
+               aria-label="Commander Escargots nettoyés barquette 500g sur WhatsApp">
+              <svg class="w-4 h-4 shrink-0" aria-hidden="true"><use href="#ico-whatsapp"/></svg>
+              Commander sur WhatsApp
+            </a>
+          </div>
+        </article>
+
+        <!-- ── Produit 4 : Escargots nettoyés barquette 1kg ── -->
+        <article class="product-card gsap-stagger glass rounded-2xl overflow-hidden">
+          <div class="product-image-wrapper">
+            <img src="assets/images/escargot.png"
+                 alt="Escargots nettoyés barquette 1kg"
+                 loading="lazy"
+                 class="product-image">
+            <div class="absolute inset-0 pointer-events-none"
+                 style="background:linear-gradient(to bottom,transparent 0%,rgba(10,15,13,0.4) 100%);"></div>
+            <span class="absolute top-4 left-4 bg-green-sig text-bg-dark text-[10px] font-bold tracking-wide uppercase px-2 py-1 rounded-full shadow-md">FRAIS DU JOUR</span>
+            <span class="absolute top-4 right-4 bg-yellow-acc/20 border border-yellow-acc/30 text-yellow-acc text-xs font-medium px-3 py-1 rounded-full">Nettoyés</span>
+          </div>
+          <div class="p-6">
+            <h3 class="font-fraunces text-lg font-semibold text-white-warm mb-1">Escargots nettoyés</h3>
+            <p class="text-gray-muted text-xs mb-4">Barquette 1 kilogramme</p>
+            <div class="flex items-end justify-between mb-5">
+              <span class="font-fraunces text-2xl font-semibold text-white-warm">XX&nbsp;XXX <span class="text-sm font-inter font-normal text-gray-muted">FCFA</span></span>
+              <span class="text-xs text-gray-muted bg-white/5 border border-white/8 px-2 py-1 rounded-lg">1 kg</span>
+            </div>
+            <a href="https://wa.me/2250788952878?text=Bonjour%2C%20je%20souhaite%20commander%20%3A%20Escargots%20nettoy%C3%A9s%20barquette%201kg"
+               target="_blank" rel="noopener noreferrer"
+               class="flex items-center justify-center gap-2 w-full bg-green-sig/10 border border-green-sig/20 text-green-sig py-3 rounded-xl text-sm font-medium hover:bg-green-sig hover:text-bg-dark transition-all"
+               aria-label="Commander Escargots nettoyés barquette 1kg sur WhatsApp">
+              <svg class="w-4 h-4 shrink-0" aria-hidden="true"><use href="#ico-whatsapp"/></svg>
+              Commander sur WhatsApp
+            </a>
+          </div>
+        </article>
+
+        <!-- ── Produit 5 : Escargots préparés à l'ail 500g ── -->
+        <article class="product-card gsap-stagger glass rounded-2xl overflow-hidden">
+          <div class="product-image-wrapper">
+            <img src="assets/images/escargot.png"
+                 alt="Escargots préparés à l'ail 500g"
+                 loading="lazy"
+                 class="product-image">
+            <div class="absolute inset-0 pointer-events-none"
+                 style="background:linear-gradient(to bottom,transparent 0%,rgba(10,15,13,0.4) 100%);"></div>
+            <span class="absolute top-4 left-4 bg-green-sig text-bg-dark text-[10px] font-bold tracking-wide uppercase px-2 py-1 rounded-full shadow-md">FRAIS DU JOUR</span>
+            <span class="absolute top-4 right-4 bg-yellow-acc/20 border border-yellow-acc/30 text-yellow-acc text-xs font-medium px-3 py-1 rounded-full">Préparés</span>
+          </div>
+          <div class="p-6">
+            <h3 class="font-fraunces text-lg font-semibold text-white-warm mb-1">Escargots à l'ail</h3>
+            <p class="text-gray-muted text-xs mb-4">Préparés · 500 grammes</p>
+            <div class="flex items-end justify-between mb-5">
+              <span class="font-fraunces text-2xl font-semibold text-white-warm">XX&nbsp;XXX <span class="text-sm font-inter font-normal text-gray-muted">FCFA</span></span>
+              <span class="text-xs text-gray-muted bg-white/5 border border-white/8 px-2 py-1 rounded-lg">500 g</span>
+            </div>
+            <a href="https://wa.me/2250788952878?text=Bonjour%2C%20je%20souhaite%20commander%20%3A%20Escargots%20pr%C3%A9par%C3%A9s%20%C3%A0%20l%27ail%20500g"
+               target="_blank" rel="noopener noreferrer"
+               class="flex items-center justify-center gap-2 w-full bg-green-sig/10 border border-green-sig/20 text-green-sig py-3 rounded-xl text-sm font-medium hover:bg-green-sig hover:text-bg-dark transition-all"
+               aria-label="Commander Escargots préparés à l'ail 500g sur WhatsApp">
+              <svg class="w-4 h-4 shrink-0" aria-hidden="true"><use href="#ico-whatsapp"/></svg>
+              Commander sur WhatsApp
+            </a>
+          </div>
+        </article>
+
+        <!-- ── Produit 6 : Pack découverte (best-seller) ── -->
+        <article class="product-card gsap-stagger glass rounded-2xl overflow-hidden relative">
+          <!-- Bandeau best-seller -->
+          <div class="absolute top-0 inset-x-0 z-10 bg-gradient-to-r from-green-sig/15 via-yellow-acc/15 to-green-sig/15 border-b border-white/10 py-2 text-center pointer-events-none" aria-hidden="true">
+            <span class="text-[11px] font-semibold tracking-widest text-white-warm uppercase">★ Best-seller</span>
+          </div>
+          <!-- Le bandeau "Best-seller" est absolute top-0 z-10 sur la carte.
+               La marge top-9 du wrapper réserve l'espace visuel sous le bandeau. -->
+          <div class="product-image-wrapper mt-9" style="border-radius:0;">
+            <img src="assets/images/escargot.png"
+                 alt="Pack découverte okrafood – vivants et préparés"
+                 loading="lazy"
+                 class="product-image">
+            <div class="absolute inset-0 pointer-events-none"
+                 style="background:linear-gradient(to bottom,transparent 0%,rgba(10,15,13,0.4) 100%);"></div>
+            <span class="absolute top-3 left-3 bg-green-sig text-bg-dark text-[10px] font-bold tracking-wide uppercase px-2 py-1 rounded-full shadow-md">FRAIS DU JOUR</span>
+            <span class="absolute top-3 right-3 bg-yellow-acc/20 border border-yellow-acc/30 text-yellow-acc text-xs font-medium px-3 py-1 rounded-full">Pack</span>
+          </div>
+          <div class="p-6">
+            <h3 class="font-fraunces text-lg font-semibold text-white-warm mb-1">Pack découverte</h3>
+            <p class="text-gray-muted text-xs mb-4">Vivants + Préparés · Idéal pour commencer</p>
+            <div class="flex items-end justify-between mb-5">
+              <span class="font-fraunces text-2xl font-semibold text-white-warm">XX&nbsp;XXX <span class="text-sm font-inter font-normal text-gray-muted">FCFA</span></span>
+              <span class="text-xs text-yellow-acc bg-yellow-acc/10 border border-yellow-acc/20 px-2 py-1 rounded-lg">Économique</span>
+            </div>
+            <a href="https://wa.me/2250788952878?text=Bonjour%2C%20je%20souhaite%20commander%20%3A%20Pack%20d%C3%A9couverte"
+               target="_blank" rel="noopener noreferrer"
+               class="flex items-center justify-center gap-2 w-full bg-green-sig text-bg-dark py-3 rounded-xl text-sm font-semibold hover:bg-green-400 transition-all hover:shadow-lg hover:shadow-green-sig/30"
+               aria-label="Commander le Pack découverte sur WhatsApp">
+              <svg class="w-4 h-4 shrink-0" aria-hidden="true"><use href="#ico-whatsapp"/></svg>
+              Commander sur WhatsApp
+            </a>
+          </div>
+        </article>
+
+      </div><!-- /grid produits -->
+    </div>
+  </section>
+
+
+  <!-- ════════════════════════════════════════
+       5. COMMENT COMMANDER (timeline 3 étapes)
+  ═══════════════════════════════════════════ -->
+  <section id="commander" class="py-24 px-6" style="background:linear-gradient(180deg,transparent 0%,rgba(74,222,128,.03) 50%,transparent 100%);">
+    <div class="max-w-4xl mx-auto">
+
+      <div class="gsap-fade text-center mb-16">
+        <h2 class="font-fraunces text-3xl md:text-4xl font-semibold text-white-warm mb-4">Comment commander&nbsp;?</h2>
+        <p class="text-gray-muted">Simple comme un message WhatsApp.</p>
+      </div>
+
+      <!-- Timeline -->
+      <div class="relative">
+
+        <!-- Ligne de progression animée (desktop) -->
+        <div class="hidden md:block absolute top-[3.25rem] left-[calc(16.7%+2.5rem)] right-[calc(16.7%+2.5rem)] h-px bg-white/8" aria-hidden="true">
+          <div id="timeline-progress" class="h-full bg-gradient-to-r from-green-sig to-yellow-acc"></div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-6 relative">
+
+          <!-- Étape 1 -->
+          <div class="gsap-stagger flex flex-col items-center text-center">
+            <div class="relative z-10 w-24 h-24 glass rounded-2xl flex items-center justify-center mb-6 border border-green-sig/25">
+              <svg class="w-10 h-10 text-green-sig" aria-label="Icône WhatsApp"><use href="#ico-whatsapp"/></svg>
+            </div>
+            <p class="text-green-sig text-[11px] font-semibold tracking-widest uppercase mb-2">Étape 1</p>
+            <h3 class="font-fraunces text-xl font-semibold text-white-warm mb-2">Choisissez</h3>
+            <p class="text-gray-muted text-sm leading-relaxed max-w-[200px]">Parcourez nos produits et cliquez sur "Commander".</p>
+            <div class="md:hidden mt-6 text-yellow-acc arrow-pulse" aria-hidden="true">
+              <svg class="w-5 h-5 rotate-90"><use href="#ico-arrow-right"/></svg>
+            </div>
+          </div>
+
+          <!-- Flèche desktop 1 -->
+          <div class="hidden md:flex absolute top-[2.9rem] left-[33%] z-20" aria-hidden="true">
+            <svg class="w-5 h-5 text-yellow-acc arrow-pulse"><use href="#ico-arrow-right"/></svg>
+          </div>
+
+          <!-- Étape 2 -->
+          <div class="gsap-stagger flex flex-col items-center text-center">
+            <div class="relative z-10 w-24 h-24 glass rounded-2xl flex items-center justify-center mb-6 border border-yellow-acc/25">
+              <svg class="w-10 h-10 text-yellow-acc" aria-label="Icône chat"><use href="#ico-chat"/></svg>
+            </div>
+            <p class="text-yellow-acc text-[11px] font-semibold tracking-widest uppercase mb-2">Étape 2</p>
+            <h3 class="font-fraunces text-xl font-semibold text-white-warm mb-2">Confirmez</h3>
+            <p class="text-gray-muted text-sm leading-relaxed max-w-[200px]">Confirmez votre commande et votre adresse sur WhatsApp.</p>
+            <div class="md:hidden mt-6 text-yellow-acc arrow-pulse-delay" aria-hidden="true">
+              <svg class="w-5 h-5 rotate-90"><use href="#ico-arrow-right"/></svg>
+            </div>
+          </div>
+
+          <!-- Flèche desktop 2 -->
+          <div class="hidden md:flex absolute top-[2.9rem] left-[66%] z-20" aria-hidden="true">
+            <svg class="w-5 h-5 text-yellow-acc arrow-pulse-delay"><use href="#ico-arrow-right"/></svg>
+          </div>
+
+          <!-- Étape 3 -->
+          <div class="gsap-stagger flex flex-col items-center text-center">
+            <div class="relative z-10 w-24 h-24 glass rounded-2xl flex items-center justify-center mb-6 border border-white/12">
+              <svg class="w-10 h-10 text-white-warm" aria-label="Icône livraison"><use href="#ico-truck"/></svg>
+            </div>
+            <p class="text-gray-muted text-[11px] font-semibold tracking-widest uppercase mb-2">Étape 3</p>
+            <h3 class="font-fraunces text-xl font-semibold text-white-warm mb-2">Recevez</h3>
+            <p class="text-gray-muted text-sm leading-relaxed max-w-[200px]">Payez à la livraison Yango et recevez en 24h.</p>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ════════════════════════════════════════
+       6. CLIENTÈLE PRO (fond bleu-deep)
+  ═══════════════════════════════════════════ -->
+  <section id="pro" class="py-24 px-6" style="background-color:var(--blue-deep);">
+    <div class="max-w-3xl mx-auto text-center">
+      <div class="gsap-fade">
+
+        <div class="inline-flex items-center gap-2 bg-white/10 text-white-warm text-xs font-medium px-4 py-2 rounded-full mb-8">
+          <svg class="w-4 h-4" aria-hidden="true"><use href="#ico-building"/></svg>
+          Offre professionnelle
+        </div>
+
+        <h2 class="font-fraunces text-3xl md:text-4xl font-semibold text-white-warm mb-6">
+          Restaurants, hôtels, traiteurs
+        </h2>
+
+        <p class="text-white-warm/65 text-lg max-w-2xl mx-auto mb-10 leading-relaxed">
+          Tarifs préférentiels, livraisons régulières programmées, facturation pro.<br>
+          Contactez-nous pour un devis personnalisé.
+        </p>
+
+        <a href="https://wa.me/2250788952878?text=Bonjour%2C%20je%20suis%20un%20professionnel%20(restaurant%2Fh%C3%B4tel%2Ftraiteur)%20et%20je%20souhaite%20un%20devis%20okrafood"
+           target="_blank" rel="noopener noreferrer"
+           class="inline-flex items-center gap-3 bg-white-warm text-blue-deep px-8 py-4 rounded-full text-base font-semibold hover:bg-white transition-all hover:shadow-xl"
+           aria-label="Nous contacter pour un devis professionnel sur WhatsApp">
+          <svg class="w-5 h-5 shrink-0" aria-hidden="true"><use href="#ico-whatsapp"/></svg>
+          Nous contacter
+        </a>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ════════════════════════════════════════
+       7. FOOTER minimaliste
+  ═══════════════════════════════════════════ -->
+  <footer id="contact" class="border-t border-white/10 py-16 px-6">
+    <div class="max-w-6xl mx-auto">
+
+      <!-- Wordmark CSS + tagline centré -->
+      <div class="text-center mb-14">
+        <div class="flex justify-center mb-3">
+          <a href="#" class="okrafood-wordmark footer-wordmark" aria-label="okrafood">
+            <span class="wm-okra">okra</span><span class="wm-food">food</span>
+            <span class="wm-dot" aria-hidden="true"></span>
+          </a>
+        </div>
+        <p class="text-gray-muted text-sm">L'escargot premium d'Abidjan</p>
+      </div>
+
+      <!-- 3 colonnes footer -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-10 mb-12 text-center md:text-left">
+
+        <!-- Contact WhatsApp -->
+        <div>
+          <h4 class="font-fraunces text-base font-semibold text-white-warm mb-4">Contact</h4>
+          <a href="https://wa.me/2250788952878?text=Bonjour"
+             target="_blank" rel="noopener noreferrer"
+             class="inline-flex items-center gap-2 text-gray-muted hover:text-green-sig transition-colors text-sm"
+             aria-label="Nous contacter sur WhatsApp">
+            <svg class="w-4 h-4 shrink-0" aria-hidden="true"><use href="#ico-whatsapp"/></svg>
+            +225 07 88 95 28 78
+          </a>
+          <p class="text-gray-muted/50 text-xs mt-2">Disponible 7j/7, de 7h à 20h</p>
+        </div>
+
+        <!-- Réseaux sociaux -->
+        <div class="flex flex-col items-center md:items-start">
+          <h4 class="font-fraunces text-base font-semibold text-white-warm mb-4">Suivez-nous</h4>
+          <a href="https://www.tiktok.com/@okrafood"
+             target="_blank" rel="noopener noreferrer"
+             class="inline-flex items-center gap-2 text-gray-muted hover:text-white-warm transition-colors text-sm group"
+             aria-label="Suivre okrafood sur TikTok">
+            <span class="w-8 h-8 rounded-lg bg-white/6 border border-white/10 flex items-center justify-center group-hover:bg-white/12 transition-colors">
+              <svg class="w-4 h-4" aria-hidden="true"><use href="#ico-tiktok"/></svg>
+            </span>
+            @okrafood
+          </a>
+        </div>
+
+        <!-- Zones de livraison -->
+        <div class="text-center md:text-right">
+          <h4 class="font-fraunces text-base font-semibold text-white-warm mb-4">Zones de livraison</h4>
+          <p class="text-gray-muted text-sm leading-relaxed">
+            Abidjan et environs<br>
+            <span class="text-xs text-gray-muted/70">
+              Cocody · Plateau · Marcory<br>
+              Yopougon · Abobo · Koumassi<br>
+              Treichville · Adjamé · Port-Bouët
+            </span>
+          </p>
+        </div>
+      </div>
+
+      <!-- Copyright -->
+      <div class="border-t border-white/10 pt-8 text-center">
+        <p class="text-gray-muted/60 text-xs">
+          © 2026 Okrafood. Tous droits réservés. — L'escargot premium d'Abidjan.
+        </p>
+      </div>
+
+    </div>
+  </footer>
+
+
+  <!-- ════════════════════════════════════════
+       GSAP — Animations
+  ═══════════════════════════════════════════ -->
+  <script>
+    gsap.registerPlugin(ScrollTrigger);
+
+    // ── Hero : stagger au chargement ──
+    gsap.timeline({ delay: 0.15 })
+      .fromTo('#h-badge',
+        { opacity: 0, y: 22 },
+        { opacity: 1, y: 0, duration: 0.65, ease: 'power2.out' })
+      .fromTo('#h-title',
+        { opacity: 0, y: 45 },
+        { opacity: 1, y: 0, duration: 0.85, ease: 'power2.out' }, '-=0.35')
+      .fromTo('#h-sub',
+        { opacity: 0, y: 30 },
+        { opacity: 1, y: 0, duration: 0.7,  ease: 'power2.out' }, '-=0.45')
+      .fromTo('#h-cta',
+        { opacity: 0, y: 22 },
+        { opacity: 1, y: 0, duration: 0.6,  ease: 'power2.out' }, '-=0.35')
+      .fromTo('#h-trust',
+        { opacity: 0, y: 16 },
+        { opacity: 1, y: 0, duration: 0.5,  ease: 'power2.out' }, '-=0.25');
+
+    // ── Blobs hero : flottement organique infini ──
+    gsap.to('#blob1', { x: 45,  y: -38, duration: 9,  ease: 'sine.inOut', yoyo: true, repeat: -1 });
+    gsap.to('#blob2', { x: -55, y: 44,  duration: 11, ease: 'sine.inOut', yoyo: true, repeat: -1, delay: 1.2 });
+    gsap.to('#blob3', { x: 32,  y: -28, duration: 13, ease: 'sine.inOut', yoyo: true, repeat: -1, delay: 2.5 });
+
+    // ── ScrollTrigger : fade-up sur chaque .gsap-fade ──
+    gsap.utils.toArray('.gsap-fade').forEach(el => {
+      gsap.fromTo(el,
+        { opacity: 0, y: 50 },
+        {
+          opacity: 1, y: 0, duration: 0.85, ease: 'power2.out',
+          scrollTrigger: { trigger: el, start: 'top 86%', toggleActions: 'play none none none' }
+        }
+      );
+    });
+
+    // ── ScrollTrigger : stagger groupé sur chaque parent commun ──
+    const staggerMap = new Map();
+    document.querySelectorAll('.gsap-stagger').forEach(el => {
+      const parent = el.parentElement;
+      if (!staggerMap.has(parent)) staggerMap.set(parent, []);
+      staggerMap.get(parent).push(el);
+    });
+    staggerMap.forEach((items, parent) => {
+      gsap.fromTo(items,
+        { opacity: 0, y: 55 },
+        {
+          opacity: 1, y: 0, duration: 0.7, ease: 'power2.out', stagger: 0.1,
+          scrollTrigger: { trigger: parent, start: 'top 82%', toggleActions: 'play none none none' }
+        }
+      );
+    });
+
+    // ── Product images : fade-in individuel (synchronisé avec le stagger des cards) ──
+    document.querySelectorAll('.product-image').forEach((img, i) => {
+      gsap.to(img, {
+        opacity: 1,
+        duration: 0.6,
+        ease: 'power1.out',
+        delay: (i % 3) * 0.1,  // calé sur le stagger 0.1s de la grille
+        scrollTrigger: {
+          trigger: img.closest('.product-card'),
+          start: 'top 82%',
+          toggleActions: 'play none none none'
+        }
+      });
+    });
+
+    // ── Timeline "Comment commander" : ligne tracée au scroll ──
+    gsap.to('#timeline-progress', {
+      scaleX: 1, duration: 1.4, ease: 'power2.inOut',
+      scrollTrigger: { trigger: '#commander', start: 'top 62%', toggleActions: 'play none none none' }
+    });
+  </script>
+
+  <!-- ── Animated background snails ── -->
+  <script>
+    (function () {
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+      const layer = document.getElementById('snail-layer');
+      const tpl   = document.getElementById('snail-tpl');
+      const COLORS = ['var(--green-signature)', 'var(--yellow-accent)', 'var(--white-warm)'];
+      const isMobile = window.innerWidth < 768;
+      const COUNT    = isMobile ? (4 + Math.floor(Math.random() * 3)) : (8 + Math.floor(Math.random() * 5));
+      const MAX_SIZE = isMobile ? 80 : 120;
+
+      function spawnSnail() {
+        const frag   = tpl.content.cloneNode(true);
+        const svg    = frag.querySelector('svg');
+        const size   = 40 + Math.random() * (MAX_SIZE - 40);
+        const height = size * (60 / 100);
+        const goRight  = Math.random() > 0.5;
+        const yCenter  = window.innerHeight * (0.1 + Math.random() * 0.8);
+        const top      = yCenter - height / 2;
+        const duration = 60 + Math.random() * 120;
+        const opacity  = 0.04 + Math.random() * 0.06;
+        const color    = COLORS[Math.floor(Math.random() * COLORS.length)];
+
+        svg.setAttribute('width',  size);
+        svg.setAttribute('height', height);
+        svg.style.cssText += ';color:' + color + ';opacity:' + opacity + ';top:' + top + 'px;left:0';
+
+        layer.appendChild(svg);
+
+        const startX = goRight ? -(size + 20) : (window.innerWidth + 20);
+        const endX   = goRight ? (window.innerWidth + 20) : -(size + 20);
+
+        gsap.set(svg, { x: startX, scaleX: goRight ? 1 : -1 });
+
+        gsap.to(svg, {
+          x: endX,
+          duration: duration,
+          ease: 'none',
+          onComplete: function () {
+            svg.remove();
+            spawnSnail();
+          }
+        });
+
+        gsap.to(svg, {
+          y: 15,
+          duration: 4 + Math.random() * 4,
+          ease: 'sine.inOut',
+          yoyo: true,
+          repeat: -1,
+          delay: Math.random() * 4
+        });
+      }
+
+      for (var i = 0; i < COUNT; i++) {
+        (function (delay) { setTimeout(spawnSnail, delay); })(i * 1200);
+      }
+    })();
+  </script>
+
+</body>
+</html>
